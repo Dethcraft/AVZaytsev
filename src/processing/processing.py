@@ -4,3 +4,4 @@ from datetime import datetime
 
 def sort_by_date(data, descending=True):
     return sorted(data, key=lambda x: datetime.strptime(x['date'], '%Y-%m-%d'), reverse=descending)
+

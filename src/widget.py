@@ -66,3 +66,5 @@ def get_data(raw_date: str) -> str:
 if __name__ == "__main__":
     print(mask_account_cart(cart_and_account_numbers))
     print(get_data(date))
+
+
