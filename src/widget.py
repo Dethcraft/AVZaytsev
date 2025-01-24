@@ -1,5 +1,4 @@
-from src.masks import get_mask_card_number, get_mask_account
-
+from src.masks import get_mask_account, get_mask_card_number
 
 # Примеры входных данных:
 cart_and_account_numbers = """ Maestro 1596837868705199
@@ -66,5 +65,3 @@ def get_data(raw_date: str) -> str:
 if __name__ == "__main__":
     print(mask_account_cart(cart_and_account_numbers))
     print(get_data(date))
-
-
