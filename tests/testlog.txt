@@ -1,0 +1,2 @@
+2025-01-25 03:54:13,940 - Function subtract called with args=(10, 5) kwargs={}
+2025-01-25 03:54:13,940 - Function subtract executed successfully, result=5
