@@ -1,45 +1,46 @@
+from functools import wraps
+from typing import Any, Callable, Optional
+
+
+def log(filename: Optional[str] = None) -> Callable:
+    """Декоратор для логирования"""
+
+    def wrapper(function: Callable) -> Callable:
+        @wraps(function)
+        def inner(*args: Any, **kwargs: Any) -> Any:
+            try:
+                result = function(*args, **kwargs)
+                log_message = f"Function {function.__name__} called with arguments: {args}, {kwargs}. Result: {result}"
+            except Exception as e:
+                log_message = f"Function {function.__name__} raised an error: {e}"
+                raise
+
+            if filename:
+                with open(filename, "a", encoding="utf-8") as log_file:
+                    log_file.write(log_message + "\n")
+            else:
+                print(log_message)
+
+            return result
+
+        return inner
+
+    return wrapper
+
+
+@log("log.txt")
 def multiply(x: int, y: int) -> int:
-    """ Функция умножения двух чисел. """
-    result = x * y
-    log_message = f"Function multiply called with arguments: {x}, {y}. Result: {result}\n"
-
-    # Логируем в консоль
-    print(log_message)
-
-    # Записываем лог в файл
-    with open("log.txt", "a", encoding="utf-8") as log_file:
-        log_file.write(log_message)
-
-    return result
+    """Функция умножения двух чисел."""
+    return x * y
 
 
+@log("log.txt")
 def subtract(x: int, y: int) -> int:
-    """ Функция вычитания двух чисел. """
-    result = x - y
-    log_message = f"Function subtract called with arguments: {x}, {y}. Result: {result}\n"
-
-    # Логируем в консоль
-    print(log_message)
-
-    # Записываем лог в файл
-    with open("log.txt", "a", encoding="utf-8") as log_file:
-        log_file.write(log_message)
-
-    return result
+    """Функция вычитания двух чисел."""
+    return x - y
 
 
-def failing_function():
-    """ Функция, которая вызывает ошибку. """
-    try:
-        raise ValueError("Test error")
-    except Exception as e:
-        error_message = f"Function failing_function raised an error: {e}\n"
-
-        # Логируем ошибку в консоль
-        print(error_message)
-
-        # Записываем ошибку в файл
-        with open("log.txt", "a", encoding="utf-8") as log_file:
-            log_file.write(error_message)
-
-        raise  # Повторно вызываем исключение
+@log("log.txt")
+def failing_function() -> None:
+    """Функция, которая вызывает ошибку."""
+    raise ValueError("Test error")
