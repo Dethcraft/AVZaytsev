@@ -1,18 +1,15 @@
-def get_mask_card_number(card_number: str) -> str:
-    """
-    Маскирует номер карты, оставляя первые 6 и последние 4 цифры видимыми.
-    Корректно форматирует пробелы.
+def get_mask_card_number(card_number):
+    if not card_number:  # Проверяем пустую строку
+        return "Пустая строка"
 
-    Пример:
-        "4111111111111111" -> "4111 11** **** 1111"
-    """
-    if len(card_number) < 6:  # Если длина номера карты меньше 6 символов
-        return "*" * len(card_number)
-    elif len(card_number) > 12:  # Для длинных номеров
-        masked_number = f"{card_number[:4]} {card_number[4:6]}** **** {card_number[-4:]}"
-        return masked_number
-    else:  # Для номеров средней длины
-        return f"{card_number[:2]}****"
+    if len(card_number) < 4:
+        return "***"  # Если слишком короткий номер
+
+    if len(card_number) == 6:
+        return card_number[:2] + "****"
+
+    # Маскируем для стандартных номеров карт
+    return card_number[:4] + " " + card_number[4:6] + "** **** " + card_number[-4:]
 
 
 def get_mask_account(account_number: str) -> str:

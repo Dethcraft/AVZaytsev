@@ -16,11 +16,11 @@ def sample_operations():
     ]
 
 
-def test_sort_by_date(sample_operations):
-    sorted_asc = sort_by_date(sample_operations, ascending=True)
-    assert sorted_asc[0]["date"] == "2023-09-30"
-    assert sorted_asc[-1]["date"] == "2023-10-02"
-
-    sorted_desc = sort_by_date(sample_operations, ascending=False)
-    assert sorted_desc[0]["date"] == "2023-10-02"
-    assert sorted_desc[-1]["date"] == "2023-09-30"
+@pytest.mark.parametrize("ascending, expected_first, expected_last", [
+    (True, "2023-09-30", "2023-10-02"),
+    (False, "2023-10-02", "2023-09-30"),
+])
+def test_sort_by_date(sample_operations, ascending, expected_first, expected_last):
+    sorted_operations = sort_by_date(sample_operations, ascending=ascending)
+    assert sorted_operations[0]["date"] == expected_first
+    assert sorted_operations[-1]["date"] == expected_last

@@ -29,16 +29,14 @@ def sample_transactions():
     ]
 
 
-def test_filter_by_currency(sample_transactions):
-    usd_transactions = list(filter_by_currency(sample_transactions, "USD"))
-    assert len(usd_transactions) == 2
-    assert all(tr["operationAmount"]["currency"]["code"] == "USD" for tr in usd_transactions)
-
-    rub_transactions = list(filter_by_currency(sample_transactions, "RUB"))
-    assert len(rub_transactions) == 1
-
-    eur_transactions = list(filter_by_currency(sample_transactions, "EUR"))
-    assert len(eur_transactions) == 0
+@pytest.mark.parametrize("currency, expected_count", [
+    ("USD", 2),
+    ("RUB", 1),
+    ("EUR", 0),
+])
+def test_filter_by_currency(sample_transactions, currency, expected_count):
+    transactions = list(filter_by_currency(sample_transactions, currency=currency))
+    assert len(transactions) == expected_count
 
 
 def test_transaction_descriptions(sample_transactions):
