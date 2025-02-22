@@ -1,34 +1,41 @@
-def get_mask_card_number(card_number: str) -> str:
-    """
-    Маскирует номер карты, оставляя первые 6 и последние 4 цифры видимыми.
-    Корректно форматирует пробелы.
+import os
+import logging
 
-    Пример:
-        "4111111111111111" -> "4111 11** **** 1111"
-    """
-    if len(card_number) < 6:  # Если длина номера карты меньше 6 символов
-        return "*" * len(card_number)
-    elif len(card_number) > 12:  # Для длинных номеров
-        masked_number = f"{card_number[:4]} {card_number[4:6]}** **** {card_number[-4:]}"
-        return masked_number
-    else:  # Для номеров средней длины
-        return f"{card_number[:2]}****"
+if not os.path.exists('logs'):
+    os.makedirs('logs')
+
+# Настройка логирования
+logger = logging.getLogger('masks')
+logger.setLevel(logging.DEBUG)
+
+file_handler = logging.FileHandler('logs/masks.log', mode='w', encoding='utf-8')
+file_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+file_handler.setFormatter(file_formatter)
+logger.addHandler(file_handler)
+
+
+def get_mask_card_number(card_number: str) -> str:
+    if len(card_number) < 6:
+        logger.warning("Длина номера карты меньше 6 символов")
+        return card_number
+    elif len(card_number) == 16:
+        masked = f'{card_number[:4]} **** **** {card_number[-4:]}'
+        logger.debug(f"Маскированный номер: {masked}")
+        return masked
+    else:
+        logger.warning("Неизвестный формат номера карты")
+        return card_number
 
 
 def get_mask_account(account_number: str) -> str:
-    """
-    Маскирует номер счета, оставляя только последние 4 или 8 символов.
-
-    Пример:
-        "12345678901234567890" -> "**34567890"
-    """
-    if not account_number:  # Если строка пустая
-        return ""
+    if not account_number:
+        logger.warning("Пустой номер счета")
+        return "***"
     elif len(account_number) > 8:
-        return f"**{account_number[-8:]}"  # Оставляем последние 8 символов
+        masked = f'***{account_number[-8:]}'
+        logger.debug(f"Маскированный номер счета: {masked}")
+        return masked
     else:
-        return f"**{account_number}"  # Маскируем все, кроме короткого номера
-
-
-print(get_mask_card_number("7000792289606361"))
-print(get_mask_account("73654108430135874305"))
+        masked = f'***{account_number}'
+        logger.debug(f"Маскированный короткий номер счета: {masked}")
+        return masked
