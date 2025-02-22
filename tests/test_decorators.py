@@ -1,35 +1,37 @@
 import pytest
-from src.decorators import multiply, subtract, failing_function, log  # Добавлен импорт log
+import os
+from src.decorators import multiply, subtract, failing_function
 
 
-def test_multiply(capsys):
+def test_multiply():
+    """ Проверяем работу функции multiply. """
     result = multiply(3, 4)
-    captured = capsys.readouterr()  # Захват вывода
     assert result == 12
-    assert "Function multiply executed successfully" in captured.err  # Проверка вывода в stderr
 
 
-def test_subtract_file_log(tmp_path):
-    filepath = tmp_path / "log.txt"
-
-    @log  # Декорируем функцию
-    def subtract(x, y):
-        return x - y
-
+def test_subtract():
+    """ Проверяем работу функции subtract. """
     result = subtract(10, 5)
-    with open(filepath, "w") as log_file:
-        log_file.write("Function subtract called\n")
-        log_file.write("Function subtract executed successfully\n")
-
-    logs = filepath.read_text()
     assert result == 5
-    assert "Function subtract called" in logs
-    assert "Function subtract executed successfully" in logs
 
 
-def test_failing_function(capsys):
+def test_failing_function():
+    """ Проверяем, что функция бросает исключение. """
     with pytest.raises(ValueError):
         failing_function()
 
-    captured = capsys.readouterr()  # Захват вывода
-    assert "Function failing_function raised an error: Test error" in captured.err  # Проверка вывода ошибки
+
+def test_log_file():
+    """ Проверяем, записывается ли лог в файл. """
+    log_file = "log.txt"
+
+    # Удаляем файл перед тестом, если он существует
+    if os.path.exists(log_file):
+        os.remove(log_file)
+
+    multiply(2, 3)  # Должен записать лог в файл log.txt
+
+    with open(log_file, "r", encoding="utf-8") as f:
+        logs = f.read()
+
+    assert "Function multiply called with arguments" in logs

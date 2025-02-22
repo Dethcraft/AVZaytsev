@@ -1,30 +1,45 @@
-import sys
-import functools
-
-def log(func):
-    """
-    Декоратор для логирования выполнения функций.
-    Логирует успешное выполнение или возникновение ошибки с описанием.
-    """
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        try:
-            result = func(*args, **kwargs)
-            print(f"Function {func.__name__} executed successfully", file=sys.stderr)  # Лог записывается в stderr
-            return result
-        except Exception as e:
-            print(f"Function {func.__name__} raised an error: {e}", file=sys.stderr)  # Лог ошибки в stderr
-            raise  # Повторно выбрасываем исключение
-    return wrapper
-
-@log
 def multiply(x: int, y: int) -> int:
-    return x * y
+    """ Функция умножения двух чисел. """
+    result = x * y
+    log_message = f"Function multiply called with arguments: {x}, {y}. Result: {result}\n"
 
-@log
+    # Логируем в консоль
+    print(log_message)
+
+    # Записываем лог в файл
+    with open("log.txt", "a", encoding="utf-8") as log_file:
+        log_file.write(log_message)
+
+    return result
+
+
 def subtract(x: int, y: int) -> int:
-    return x - y
+    """ Функция вычитания двух чисел. """
+    result = x - y
+    log_message = f"Function subtract called with arguments: {x}, {y}. Result: {result}\n"
 
-@log
+    # Логируем в консоль
+    print(log_message)
+
+    # Записываем лог в файл
+    with open("log.txt", "a", encoding="utf-8") as log_file:
+        log_file.write(log_message)
+
+    return result
+
+
 def failing_function():
-    raise ValueError("Test error")
+    """ Функция, которая вызывает ошибку. """
+    try:
+        raise ValueError("Test error")
+    except Exception as e:
+        error_message = f"Function failing_function raised an error: {e}\n"
+
+        # Логируем ошибку в консоль
+        print(error_message)
+
+        # Записываем ошибку в файл
+        with open("log.txt", "a", encoding="utf-8") as log_file:
+            log_file.write(error_message)
+
+        raise  # Повторно вызываем исключение
