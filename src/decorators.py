@@ -44,3 +44,4 @@ def subtract(x: int, y: int) -> int:
 def failing_function() -> None:
     """Функция, которая вызывает ошибку."""
     raise ValueError("Test error")
+
