@@ -28,7 +28,8 @@ def subtract(x: int, y: int) -> int:
     return result
 
 
-def failing_function():
+def failing_function() -> None:
+    print("Ошибка!")
     """ Функция, которая вызывает ошибку. """
     try:
         raise ValueError("Test error")
