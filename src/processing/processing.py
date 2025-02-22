@@ -45,3 +45,4 @@ if __name__ == '__main__':
     sorted_operations = sort_by_date(filtered_operations, ascending=True)
     print("\nОтсортированные операции:")
     print(sorted_operations)
+
