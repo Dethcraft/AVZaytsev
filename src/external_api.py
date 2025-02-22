@@ -1,42 +1,29 @@
-import os
 import requests
-from dotenv import load_dotenv
+from typing import Dict
 
-# Загружаем переменные окружения
-load_dotenv()
-
-API_KEY = os.getenv("API_KEY")
-BASE_CURRENCY = os.getenv("BASE_CURRENCY", "RUB")
-EXCHANGE_API_URL = "https://api.apilayer.com/exchangerates_data/latest"
+API_KEY = 'YOUR_API_KEY'
+EXCHANGE_API_URL = 'https://api.example.com'
 
 
-def convert_to_rub(transaction: dict) -> float:
-    """
-    Конвертирует сумму в рубли.
-
-    :param transaction: Словарь с "amount" и "currency".
-    :return: Сумма в рублях (float)
-    """
+def convert_to_rub(transaction: Dict[str, float]) -> float:
     amount = transaction.get("amount", 0)
     currency = transaction.get("currency", "RUB")
 
-    if currency == "RUB":
-        return float(amount)
-
     headers = {'apikey': API_KEY}
-    params = {"base": currency, "symbols": BASE_CURRENCY}
+    params = {'from': currency, 'to': 'RUB', 'amount': amount}
 
     try:
-        response = requests.get(EXCHANGE_API_URL, headers=headers, params=params)
+        response = requests.get(f"{EXCHANGE_API_URL}/convert", headers=headers, params=params)
         response.raise_for_status()
         exchange_data = response.json()
 
-        rate = exchange_data['rates'].get(BASE_CURRENCY)
-        if rate is None:
-            raise ValueError("Не удалось получить курс.")
+        result = exchange_data.get('result')
+        if result is not None:
+            return float(result)
 
-        return float(amount) * rate
-
-    except (requests.RequestException, ValueError, KeyError) as e:
+    except requests.RequestException as e:
         print(f"Ошибка API: {e}")
-        return 0.0
+    except ValueError:
+        print("Не удалось получить курс.")
+
+    return 0.0
